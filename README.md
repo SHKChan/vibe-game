@@ -2,6 +2,12 @@
 
 www.vibe-game.com 的总页面和全站顶栏。
 
+**线上地址：https://www.vibe-game.com/**
+
+| 游戏 | 线上地址 | 仓库 |
+|---|---|---|
+| 浮生录（十四亿分之一、江湖一梦） | https://www.vibe-game.com/life-sim/ | [SHKChan/life-sim](https://github.com/SHKChan/life-sim) |
+
 - `public/index.html`：游戏列表页
 - `public/nav.js`：全站顶栏，每个游戏页面用 `<script src="/nav.js" defer></script>` 引用；新增游戏只改这里的 `GAMES`
 - `docs/GUIDE.md`：所有游戏共同的约定（网站结构、命名、版本号、主题、语言、画风、检查、部署），做新游戏前先读
