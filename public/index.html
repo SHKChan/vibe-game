@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Vibe Game · 网页小游戏合集</title>
+<meta name="description" content="Vibe Game：打开就能玩的网页小游戏合集。浮生录人生模拟器：投胎到现代中国，或者重生成金庸江湖里的人物。">
+<meta name="keywords" content="网页游戏,小游戏,人生模拟器,浮生录,十四亿分之一,江湖一梦,金庸">
+<meta name="theme-color" content="#0e1315">
+<meta property="og:title" content="Vibe Game · 网页小游戏合集">
+<meta property="og:description" content="打开就能玩的网页小游戏合集。">
+<meta property="og:url" content="https://vibe-game.com/">
+<link rel="canonical" href="https://vibe-game.com/">
+<style>
+  :root {
+    --bg: #0e1315; --panel: #161d20; --line: #263034; --fg: #e8e4da; --soft: #b9b4a8; --muted: #7d7a72; --brand: #c9a24a;
+    color-scheme: dark;
+  }
+  @media (prefers-color-scheme: light) {
+    :root { --bg: #f4f0e6; --panel: #fffdf7; --line: #ddd5c3; --fg: #23201b; --soft: #4d483f; --muted: #8a8478; --brand: #9a7424; color-scheme: light; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", system-ui, sans-serif; line-height: 1.7; }
+  .wrap { max-width: 960px; margin: 0 auto; padding: 64px 16px 48px; }
+  header h1 { margin: 0; font-size: clamp(40px, 8vw, 72px); letter-spacing: .04em; font-weight: 900; }
+  header h1 i { font-style: normal; color: var(--brand); }
+  header p { margin: 8px 0 40px; color: var(--soft); font-size: 17px; max-width: 32em; }
+  .games { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+  .game { position: relative; display: flex; flex-direction: column; gap: 10px; padding: 22px; background: var(--panel); border: 1px solid var(--line);
+    border-radius: 6px; color: inherit; text-decoration: none; overflow: hidden; }
+  .game::before { content: ''; position: absolute; inset: 0 auto 0 0; width: 4px; background: var(--c); }
+  .game:hover { border-color: var(--c); }
+  .game .nm { font-size: 28px; font-weight: 900; }
+  .game .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .game .tags span { font-size: 12px; color: var(--c); border: 1px solid currentColor; border-radius: 3px; padding: 0 6px; line-height: 1.7; }
+  .game .d { color: var(--soft); font-size: 15px; }
+  .game .go { margin-top: auto; align-self: flex-start; font-size: 14px; color: var(--bg); background: var(--c); border-radius: 4px; padding: 4px 14px; }
+  .soon { opacity: .5; pointer-events: none; }
+  footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
+</style>
+</head>
+<body>
+<!-- 游戏总页面。新增游戏：在下面加一个 <a class="game">，href 指向它的路径 -->
+<div class="wrap">
+  <header>
+    <h1>Vibe <i>Game</i></h1>
+    <p>打开就能玩的网页小游戏。不用下载，不用注册，手机电脑都能玩。</p>
+  </header>
+  <main class="games">
+    <a class="game" href="/life-sim/" style="--c:#c9a24a">
+      <div class="nm">浮生录</div>
+      <div class="tags"><span>人生模拟器</span><span>文字</span><span>一局一生</span></div>
+      <div class="d">投一次胎，从出生活到离世。可以随机投胎到现代中国的某个家庭，也可以重生成射雕三部曲里有名有姓的人物。</div>
+      <span class="go">进入</span>
+    </a>
+    <div class="game soon" style="--c:#7d7a72">
+      <div class="nm">新游戏</div>
+      <div class="d">正在做。</div>
+    </div>
+  </main>
+  <footer>vibe-game.com</footer>
+</div>
+</body>
+</html>
