@@ -12,6 +12,7 @@
   // 游戏列表：path 是网址路径（目录名），name 按语言
   const GAMES = [
     { path: '/life-sim/', name: { zh: '浮生录', en: 'Floating Lives', ja: '浮生録', es: 'Vidas Flotantes' } },
+    { path: '/arthur/', name: { zh: 'Arthur 的打字游戏', en: "Arthur's Typing Game", ja: 'Arthurのタイピングゲーム', es: 'Mecanografía de Arthur' } },
   ];
   const LANGS = [['zh', '中', '中文'], ['en', 'EN', 'English'], ['ja', '日', '日本語'], ['es', 'ES', 'Español']];
   let lang = 'zh';

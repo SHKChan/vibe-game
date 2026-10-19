@@ -10,12 +10,41 @@
 www.vibe-game.com/            总页面（本仓库 vibe-game，public/ 下）
 www.vibe-game.com/nav.js      全站顶栏，所有游戏页面都引用
 www.vibe-game.com/life-sim/   浮生录（仓库 life-sim）：大厅 + 十四亿分之一 + 江湖一梦
+www.vibe-game.com/arthur/     Arthur 的打字游戏（仓库 arthur-vibe-game）
 www.vibe-game.com/<游戏>/      以后的游戏，每个一个仓库、一个 Cloudflare Worker、一条路由
 ```
 
 - 每个游戏是独立仓库、独立 Worker。Worker 用路由 `www.vibe-game.com/<路径>*` 挂在总域名下，总页面的 Worker 用自定义域名接住其余路径。路由比自定义域名先匹配，所以互不干扰。
 - 游戏打包时把文件放进 `dist/<路径>/`（浮生录用 `node share/tools/build.js --base=life-sim`），页面里的链接一律用相对路径。
 - 推送到 GitHub 的 `main` 就会自动部署。只推送检查过的版本。
+
+### Cloudflare 设置（新游戏照抄）
+
+| Worker | 仓库 | 挂法 | Build command | Deploy command |
+|---|---|---|---|---|
+| `vibe-game` | vibe-game | 自定义域名 `www.vibe-game.com` | 无 | `npx wrangler deploy`（读 `wrangler.jsonc`，上传 `public/`） |
+| `life-sim` | life-sim | 路由 `www.vibe-game.com/life-sim*` | `node share/tools/build.js --base=life-sim` | `npx wrangler deploy --name life-sim --assets ./dist --compatibility-date=…` |
+| `arthur-vibe-game` | arthur-vibe-game | 路由 `www.vibe-game.com/arthur*` | `node tools/build.js` | `npx wrangler deploy --name arthur-vibe-game --assets ./dist --compatibility-date=2025-06-01` |
+
+新游戏的模板（`<路径>` 是网址路径，`<worker>` 是 Worker 名）：
+
+```
+Build command:  （把运行时文件拷到 dist/<路径>/ 的打包脚本）
+Deploy command: npx wrangler deploy --name <worker> --assets ./dist --compatibility-date=2025-06-01
+Root directory: /
+Route:          www.vibe-game.com/<路径>*   （Zone 选 vibe-game.com）
+```
+
+规则：
+
+- **Worker 收到的是完整路径。** 请求 `/<路径>/index.html` 时，它会在上传的目录里找 `<路径>/index.html`。所以打包结果必须是 `dist/<路径>/...`，多套一层目录。直接上传仓库根目录会 404。
+- **三处名字对上**：`--name` = Cloudflare 里的 Worker 名（不一致会报 name mismatch）；打包脚本的路径 = 路由路径；`--assets` = 打包输出目录。
+- 游戏仓库里**不放** `wrangler.jsonc` / `wrangler.toml`，参数都写在 Cloudflare 的命令里。只有总页面仓库用 `wrangler.jsonc`。
+- 路径不能是另一个路径的前缀（路由是 `/<路径>*` 通配，`life` 会吃掉 `life-sim`）。
+- 本游戏的文件一律用**相对路径**；只有全站共用的 `/nav.js` 用 `/` 开头（它归总页面的 Worker）。写成 `/game.js` 会去找总页面，结果是 404。
+- `localStorage` 键名加游戏前缀（整个域名共用一个 localStorage），全站共用的只有 `vibe.lang`。
+- 上线新游戏：本仓库 `public/nav.js` 的 `GAMES` 和 `public/index.html` 各加一项，README 的表格加一行。
+- 本地检查：`npx wrangler dev --assets ./dist --compatibility-date=2025-06-01`，打开 `http://localhost:8787/<路径>/`。本地 `/nav.js` 是 404，这是正常的。
 
 ### 命名
 

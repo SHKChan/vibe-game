@@ -7,6 +7,7 @@ www.vibe-game.com 的总页面和全站顶栏。
 | 游戏 | 线上地址 | 仓库 |
 |---|---|---|
 | 浮生录（十四亿分之一、江湖一梦） | https://www.vibe-game.com/life-sim/ | [SHKChan/life-sim](https://github.com/SHKChan/life-sim) |
+| Arthur 的打字游戏 | https://www.vibe-game.com/arthur/ | [SHKChan/arthur-vibe-game](https://github.com/SHKChan/arthur-vibe-game) |
 
 - `public/index.html`：游戏列表页
 - `public/nav.js`：全站顶栏，每个游戏页面用 `<script src="/nav.js" defer></script>` 引用；新增游戏只改这里的 `GAMES`
