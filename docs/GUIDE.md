@@ -117,4 +117,5 @@ Route:          www.vibe-game.com/<路径>*   （Zone 选 vibe-game.com）
 - 大改动先搭好“工具层”（数据接口、检查工具），写进 SPEC，再把内容按文件分给多个助手并行写，每个助手只改自己的文件，避免互相覆盖。
 - 并行助手太多会撞上用量上限；四五个是上限，长任务要能从中断处接着做。
 - 模拟器的检查规则就是给助手的“验收标准”，规则越具体，返工越少。
+- 每个仓库的 `.claude/agents/` 放同一套设计子代理（game-designer、narrative-designer、economy-designer、level-designer），开头都写了“先读 CLAUDE.md 和本文件、不用游戏引擎”。原版来自通用的游戏开发代理合集，引擎类的（Unity、Unreal、Godot、Roblox、Blender 等）和纯静态网页游戏无关，不要放进来。改代理时，三个仓库要一起同步。
 - 用户偏好：用中文交流；改完检查通过后直接提交、推送，不用等审阅代码；最后用白话总结改了什么。
