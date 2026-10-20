@@ -1,8 +1,10 @@
 # vibe-game
 
-www.vibe-game.com 的总页面（游戏列表）和全站外壳 `/nav.js`（顶栏：游戏列表、版本号、问题反馈、定时提醒；游戏登记表 `GAMES`）。Cloudflare Worker `vibe-game`，静态资源目录 `public/`，推送到 main 自动部署。
+www.vibe-game.com 的总页面和全站顶栏 `/nav.js`，也是整个系列的**规范所在地**。Cloudflare Worker `vibe-game`，静态资源目录 `public/`，推送到 main 自动部署。
 
-- 先读 `docs/GUIDE.md`：所有游戏共同的约定，包括网站结构、Cloudflare 设置、命名、版本号、主题、语言和画风。
-- 上线新游戏时，改 `public/nav.js` 的 `GAMES`（顶栏、首页游戏卡都从这里生成；版本号不写这里，从游戏页面的 `vg:version` 读）和 `README.md` 的表格。新游戏仓库从 `docs/template/` 拷。
-- `nav.js` 会被所有游戏页面加载：样式全部加 `vg-` 前缀并重置继承，不要依赖宿主页面的样式；改完要在各游戏页面（含手机宽度）检查。
-- `.claude/agents/` 里有 4 个设计用的子代理：game / narrative / economy / level designer。每个游戏仓库里都有一份相同的副本，改的话要同步。
+- `docs/GUIDE.md` 是系列规范，所有游戏仓库的 agent 都按它做，各游戏的 `CLAUDE.md` 开头会指过来。先读它。
+  - 跨仓库的规则（部署、顶栏、版本号、存档键、语言、画风、文风、协作习惯）只写在 GUIDE，不要再抄进游戏仓库；游戏仓库只写参数和例外。
+  - 改了规范（尤其是新增“例外”或改了游戏要做的事），检查各游戏仓库的 `CLAUDE.md` 和 `docs/template/CLAUDE.md` 是否要跟着改参数表或例外说明。
+- `public/nav.js`：所有游戏页面都加载它。样式全部加 `vg-` 前缀并重置继承，不依赖宿主页面；改完要在每个游戏页面（含 390px 手机宽度）检查（GUIDE 第七节）。
+- 上线新游戏、改路径：按 GUIDE 第六节（`GAMES` 加一项、README 表格、GUIDE 的表、`_redirects`）。
+- `.claude/agents/` 的 4 个设计子代理只放在这里，游戏仓库不放副本（用法见 GUIDE 第十三节）。

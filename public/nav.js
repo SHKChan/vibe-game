@@ -1,6 +1,6 @@
 /* Vibe Game 全站外壳：顶栏（游戏列表、版本号、问题反馈、定时提醒）+ 游戏登记表
  * 每个游戏页面的 <head> 里加：
- *   <meta name="vg:version" content="1.0.0">          本游戏的版本号，显示在顶栏；首页游戏卡也去各游戏页面读这一行，所以发版不用改首页
+ *   <meta name="vg:version" content="1.0.0">          本游戏的版本号，淡淡地显示在顶栏最右边；首页游戏卡也去各游戏页面读这一行，所以发版不用改首页
  *   <script src="/nav.js" defer></script>
  * 顶栏不吸顶，跟着页面滚走；没有底栏，游戏可以用满屏幕。顶栏高度写在 CSS 变量 --vg-nav-h，铺满屏幕的游戏用它让位置（装好后会触发一次 resize）。
  * 新增游戏只改这个文件的 GAMES：顶栏、首页游戏卡都从这里来。
@@ -96,7 +96,7 @@
 .vg-games a:hover{color:var(--fg,#e6eae8);background:color-mix(in srgb,var(--fg,#e6eae8) 8%,transparent)}
 .vg-games a[aria-current="page"]{color:var(--fg,#e6eae8);background:color-mix(in srgb,var(--fg,#e6eae8) 10%,transparent)}
 .vg-sp{flex:1}
-.vg-ver{font:11px/1 ui-monospace,Consolas,monospace;color:var(--muted,#97a3a0);opacity:.7;white-space:nowrap;flex:none}
+.vg-ver{font:10px/1 ui-monospace,Consolas,monospace;color:var(--muted,#97a3a0);opacity:.5;white-space:nowrap;flex:none;margin-left:4px}
 .vg-fb{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:1px solid var(--line,#2a3236);border-radius:999px;color:var(--muted,#97a3a0);text-decoration:none;font-size:13px;white-space:nowrap;flex:none;box-sizing:border-box}
 .vg-fb:hover{border-color:var(--muted,#97a3a0);color:var(--fg,#e6eae8)}
 .vg-fb svg{width:15px;height:15px;flex:0 0 auto}
@@ -141,7 +141,7 @@
 .vg-toast .vg-btn.pri{background:var(--brand,#c9a24a);border-color:var(--brand,#c9a24a);color:var(--bg,#121619)}
 @keyframes vg-in{from{opacity:0;transform:translate(-50%,-12px)}}
 @media (max-width:600px){.vg-in{padding:0 12px;height:40px}.vg-logo span{display:none}.vg-logo{margin-right:4px}.vg-pop{right:8px}
-  .vg-lang{padding:0 2px 0 8px}.vg-lang select{font-size:12px;padding-right:4px}.vg-bar .vg-rem{padding:0 8px}.vg-fb{padding:0 8px}.vg-fb span{display:none}.vg-ver{font-size:10px}}
+  .vg-lang{padding:0 2px 0 8px}.vg-lang select{font-size:12px;padding-right:4px}.vg-bar .vg-rem{padding:0 8px}.vg-fb{padding:0 8px}.vg-fb span{display:none}.vg-ver{font-size:9px;margin-left:2px}}
 `;
   const globe = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>';
   const chat = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>';
@@ -349,11 +349,11 @@
       + '<a class="vg-logo" href="/" title="' + esc(tx(TX.home)) + '"><i></i><span>Vibe Game</span></a>'
       + '<div class="vg-games">' + GAMES.map((g) => '<a href="' + g.path + '"' + (g === game ? ' aria-current="page"' : '') + '>' + esc(tx(g.name)) + '</a>').join('') + '</div>'
       + '<span class="vg-sp"></span>'
-      + (version ? '<span class="vg-ver" title="' + esc(tx(TX.ver)) + '">v' + esc(version) + '</span>' : '')
       + '<a class="vg-fb" href="https://github.com/' + repo + '/issues/new" target="_blank" rel="noopener" title="' + esc(tx(TX.fbTip)) + '">' + chat + '<span>' + esc(tx(TX.feedback)) + '</span></a>'
       + '<button type="button" class="vg-rem" aria-haspopup="dialog" aria-expanded="false" aria-label="' + esc(tx(TX.remind)) + '">' + clock + '<span></span></button>'
       + (LANG_OPEN ? '<label class="vg-lang" title="' + esc(tx(TX.lang)) + '">' + globe + '<select aria-label="' + esc(tx(TX.lang)) + '">'
         + LANGS.map((l) => '<option value="' + l[0] + '"' + (l[0] === lang ? ' selected' : '') + '>' + l[2] + '</option>').join('') + '</select></label>' : '')
+      + (version /* 放在最后、最淡：大部分时候不用看它 */ ? '<span class="vg-ver" title="' + esc(tx(TX.ver)) + '">v' + esc(version) + '</span>' : '')
       + '</div>';
     document.body.insertBefore(bar, document.body.firstChild);
     // 游戏自己有反馈框（例如浮生录会附上当前进度）就交给它：页面里定义 window.VG_FEEDBACK
