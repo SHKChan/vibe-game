@@ -92,6 +92,7 @@ Route:          www.vibe-game.com/<路径>*
 | 字体 | `"SimSun", "Songti SC", ui-monospace, monospace` |
 | 样式范围 | 强制的颜色、字体规则只写在游戏自己的容器里（例如 `body.textmode #stage *`），不要写 `body.textmode *`，会把顶栏染掉 |
 | 画面 | 不画 Canvas、不显示立绘头像；图表转灰度（夜读再反色）；内容写成文字清单，人物说的话可以按时间列成聊天记录 |
+| 滚动条 | 藏起原生滚动条（`scrollbar-width: none` 和 `::-webkit-scrollbar`），在能滚动的区域右边换成一列文字符号 `▲ │ █ │ ▼`（字号等于行高，符号首尾相接）；点 ▲/▼ 翻一屏，点轨道跳到那里。参考逍遥客栈 `src/ui/textscroll.ts` |
 | 标题 | 页面标题改成「今日记录.txt」（伪装成文档，不带「 · Vibe Game」）；退出时改回 |
 | 声音 | 默认静音，设置里可以打开 |
 
