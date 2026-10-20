@@ -76,7 +76,7 @@ Route:          www.vibe-game.com/<路径>*
 | 路径 | 本游戏的文件一律用**相对路径**；只有 `/nav.js` 用 `/` 开头（它归 vibe-game 的 Worker）。写成 `/game.js` 会去找总页面，结果 404 |
 | localStorage | 键名加本游戏前缀（整个域名共用一个 localStorage），存档用 `<前缀>.save.v<版本>`，结构改了就升版本。全站共用、游戏不要动的键：`vibe.lang`、`vibe.reminder`、`vibe.reminder.fired` |
 | 语言 | **暂时只开中文**：`nav.js` 的 `LANG_OPEN = false`，顶栏没有语言选择，`vibe.lang` 固定 `zh`；游戏也只显示中文（浮生录在 `share/i18n.js` 有同名开关）。已有的翻译留着，开放时两处开关一起改。**例外**：打字游戏（typing-game）界面是英文，见它的 `CLAUDE.md` |
-| 主题 | 有主题切换的游戏：暗（默认）、灰、白三种，点一下换下一种，记在 `localStorage`；颜色全部用 CSS 变量，三套都要好看。顶栏会读页面的 `--bg --panel --fg --line --muted --brand` |
+| 主题 | 有主题切换的游戏：暗（默认）、灰、白三种，点一下换下一种，记在 `localStorage`；颜色全部用 CSS 变量，三套都要好看。顶栏会读页面的 `--bg --panel --fg --line --muted --brand`。游戏有特殊显示模式（例如逍遥客栈的纯文字模式）时，在 `body` 上把这几个变量设成那个模式的颜色，顶栏自动跟着变；不要用 `* { color: … !important }` 这类全局规则，会把顶栏一起染掉，限定在游戏自己的容器里 |
 | 手机 | 820px 以下单栏，最重要的内容排最上面；按钮区横向滑动，不换行；390px 宽不能有横向滚动 |
 
 以后开放翻译时的做法：界面文字预先翻译（代码写 `t('中文')`，词表按中文原文做键）；剧情、长文本不预先翻译，载入谷歌网页翻译（写 `googtrans=/zh-CN/en` cookie，再载入 `translate.google.com/translate_a/element.js`，藏掉横幅；已按语言写好的元素加 `class="notranslate"`）；钱在中文下显示人民币，其他语言换算成美元。
