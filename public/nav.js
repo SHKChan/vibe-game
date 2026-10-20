@@ -5,6 +5,7 @@
  * 顶栏不吸顶，跟着页面滚走；没有底栏，游戏可以用满屏幕。顶栏高度写在 CSS 变量 --vg-nav-h，铺满屏幕的游戏用它让位置（装好后会触发一次 resize）。
  * 新增游戏只改这个文件的 GAMES：顶栏、首页游戏卡都从这里来。
  * 颜色读宿主页面的 CSS 变量（--bg --panel --fg --line --muted --brand），没有就用自己的默认值，深浅主题都能看。
+ * 纯文字模式（可选）：游戏进入纯文字模式时在 <html> 上设 data-vg-mode="text"，退出时去掉；顶栏跟着换成纯文字样式（颜色照旧读上面的变量）。
  * 语言存在 localStorage 的 vibe.lang（各游戏共用）；页面里有 JY.setLang 就交给它，没有就自己存了刷新。
  * 定时提醒存在 localStorage 的 vibe.reminder（各游戏共用），换游戏、刷新都接着倒计时；多个标签页只响一次。
  */
@@ -96,6 +97,15 @@
 .vg-games a:hover{color:var(--fg,#e6eae8);background:color-mix(in srgb,var(--fg,#e6eae8) 8%,transparent)}
 .vg-games a[aria-current="page"]{color:var(--fg,#e6eae8);background:color-mix(in srgb,var(--fg,#e6eae8) 10%,transparent)}
 .vg-sp{flex:1}
+.vg-bar.vg-text,.vg-bar.vg-text *{font-family:"SimSun","Songti SC",ui-monospace,Consolas,monospace!important}
+.vg-bar.vg-text .vg-logo i,.vg-bar.vg-text svg{display:none}
+.vg-bar.vg-text .vg-logo{font-weight:700}
+.vg-bar.vg-text .vg-games a{border-radius:0;background:none}
+.vg-bar.vg-text .vg-games a[aria-current="page"]{text-decoration:underline;text-underline-offset:4px}
+.vg-bar.vg-text .vg-fb,.vg-bar.vg-text .vg-rem,.vg-bar.vg-text .vg-lang{border-radius:2px}
+.vg-bar.vg-text .vg-rem::before{content:attr(data-label)}
+.vg-bar.vg-text .vg-ver{opacity:1}
+.vg-text-pop{border-radius:2px!important;box-shadow:none!important;font-family:"SimSun","Songti SC",ui-monospace,Consolas,monospace!important}
 .vg-ver{font:12px/1 ui-monospace,Consolas,monospace;color:var(--muted,#97a3a0);opacity:.75;white-space:nowrap;flex:none;margin-left:4px}
 .vg-fb{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:1px solid var(--line,#2a3236);border-radius:999px;color:var(--muted,#97a3a0);text-decoration:none;font-size:13px;white-space:nowrap;flex:none;box-sizing:border-box}
 .vg-fb:hover{border-color:var(--muted,#97a3a0);color:var(--fg,#e6eae8)}
@@ -141,7 +151,8 @@
 .vg-toast .vg-btn.pri{background:var(--brand,#c9a24a);border-color:var(--brand,#c9a24a);color:var(--bg,#121619)}
 @keyframes vg-in{from{opacity:0;transform:translate(-50%,-12px)}}
 @media (max-width:600px){.vg-in{padding:0 12px;height:40px}.vg-logo span{display:none}.vg-logo{margin-right:4px}.vg-pop{right:8px}
-  .vg-lang{padding:0 2px 0 8px}.vg-lang select{font-size:12px;padding-right:4px}.vg-bar .vg-rem{padding:0 8px}.vg-fb{padding:0 8px}.vg-fb span{display:none}.vg-ver{font-size:11px;margin-left:2px}}
+  .vg-lang{padding:0 2px 0 8px}.vg-lang select{font-size:12px;padding-right:4px}.vg-bar .vg-rem{padding:0 8px}.vg-fb{padding:0 8px}.vg-fb span{display:none}.vg-ver{font-size:11px;margin-left:2px}
+  .vg-bar.vg-text .vg-fb::before{content:attr(data-label)}}
 `;
   const globe = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>';
   const chat = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>';
@@ -349,8 +360,8 @@
       + '<a class="vg-logo" href="/" title="' + esc(tx(TX.home)) + '"><i></i><span>Vibe Game</span></a>'
       + '<div class="vg-games">' + GAMES.map((g) => '<a href="' + g.path + '"' + (g === game ? ' aria-current="page"' : '') + '>' + esc(tx(g.name)) + '</a>').join('') + '</div>'
       + '<span class="vg-sp"></span>'
-      + '<a class="vg-fb" href="https://github.com/' + repo + '/issues/new" target="_blank" rel="noopener" title="' + esc(tx(TX.fbTip)) + '">' + chat + '<span>' + esc(tx(TX.feedback)) + '</span></a>'
-      + '<button type="button" class="vg-rem" aria-haspopup="dialog" aria-expanded="false" aria-label="' + esc(tx(TX.remind)) + '">' + clock + '<span></span></button>'
+      + '<a class="vg-fb" href="https://github.com/' + repo + '/issues/new" target="_blank" rel="noopener" title="' + esc(tx(TX.fbTip)) + '" data-label="' + esc(tx(TX.feedback)) + '">' + chat + '<span>' + esc(tx(TX.feedback)) + '</span></a>'
+      + '<button type="button" class="vg-rem" aria-haspopup="dialog" aria-expanded="false" aria-label="' + esc(tx(TX.remind)) + '" data-label="' + esc(tx(TX.remind)) + '">' + clock + '<span></span></button>'
       + (LANG_OPEN ? '<label class="vg-lang" title="' + esc(tx(TX.lang)) + '">' + globe + '<select aria-label="' + esc(tx(TX.lang)) + '">'
         + LANGS.map((l) => '<option value="' + l[0] + '"' + (l[0] === lang ? ' selected' : '') + '>' + l[2] + '</option>').join('') + '</select></label>' : '')
       + (version /* 放在最后、最淡：大部分时候不用看它 */ ? '<span class="vg-ver" title="' + esc(tx(TX.ver)) + '">v' + esc(version) + '</span>' : '')
@@ -384,6 +395,16 @@
     // 铺满屏幕的游戏用 --vg-nav-h 给顶栏让位置
     const setH = () => document.documentElement.style.setProperty('--vg-nav-h', bar.offsetHeight + 'px');
     setH();
+    // 纯文字模式：游戏在 <html> 上设 data-vg-mode="text"，顶栏跟着换样式
+    const html = document.documentElement;
+    const syncMode = () => {
+      const on = html.getAttribute('data-vg-mode') === 'text';
+      bar.classList.toggle('vg-text', on);
+      if (pop) pop.classList.toggle('vg-text-pop', on);
+      setH();
+    };
+    syncMode();
+    new MutationObserver(syncMode).observe(html, { attributes: true, attributeFilter: ['data-vg-mode'] });
     window.addEventListener('resize', setH);
     window.dispatchEvent(new Event('resize'));
 
