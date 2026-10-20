@@ -91,6 +91,7 @@ Route:          www.vibe-game.com/<路径>*
 | 配色 | 三种，在设置里换，**默认便签**。在 `body` 上设下表的颜色，同时把顶栏读的 `--bg --panel --fg --line --muted --brand` 设成对应值（`--bg`/`--panel` = 底色，`--fg`/`--brand` = 字色），顶栏就跟着变 |
 | 字体 | `"SimSun", "Songti SC", ui-monospace, monospace` |
 | 样式范围 | 强制的颜色、字体规则只写在游戏自己的容器里（例如 `body.textmode #stage *`），不要写 `body.textmode *`，会把顶栏染掉 |
+| 不用亮色 | 只用上表的字色、线条色、次要文字色；标题前的色条、标签、进度条、正负数都不用红绿金这类亮色，醒目靠粗细和符号 |
 | 画面 | 不画 Canvas、不显示立绘头像；图表转灰度（夜读再反色）；内容写成文字清单，人物说的话可以按时间列成聊天记录 |
 | 滚动条 | 藏起原生滚动条（`scrollbar-width: none` 和 `::-webkit-scrollbar`），在能滚动的区域右边换成一列文字符号 `▲ │ █ │ ▼`（字号等于行高，符号首尾相接）；点 ▲/▼ 翻一屏，点轨道跳到那里。参考逍遥客栈 `src/ui/textscroll.ts` |
 | 标题 | 页面标题改成「今日记录.txt」（伪装成文档，不带「 · Vibe Game」）；退出时改回 |
