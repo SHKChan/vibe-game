@@ -28,7 +28,7 @@
       tags: { zh: ['打字', '像素', '打怪'], en: ['Typing', 'Pixel', 'Battle'] },
       desc: { zh: '看词打词，打对一个就砍史莱姆一刀。五关越来越长，打错会掉血，挑战最快通关时间。',
         en: 'Type the word to strike the slime. Five stages of longer words; mistakes cost hearts. Beat your best time.' } },
-    { path: '/aquarium/', repo: 'SHKChan/aquairum', color: '#5ab0e8',
+    { path: '/aquarium/', repo: 'SHKChan/aquarium', color: '#5ab0e8',
       name: { zh: '像素水族箱', en: 'Pixel Aquarium', ja: 'ピクセル水族館', es: 'Acuario Pixel' },
       tags: { zh: ['养成', '像素', '放置'], en: ['Pet sim', 'Pixel', 'Idle'] },
       desc: { zh: '孵一颗鱼卵，喂食、治病，看它长大。照顾得好不好，会长成不同的样子。',
@@ -96,7 +96,7 @@
 .vg-games a:hover{color:var(--fg,#e6eae8);background:color-mix(in srgb,var(--fg,#e6eae8) 8%,transparent)}
 .vg-games a[aria-current="page"]{color:var(--fg,#e6eae8);background:color-mix(in srgb,var(--fg,#e6eae8) 10%,transparent)}
 .vg-sp{flex:1}
-.vg-ver{font:10px/1 ui-monospace,Consolas,monospace;color:var(--muted,#97a3a0);opacity:.5;white-space:nowrap;flex:none;margin-left:4px}
+.vg-ver{font:12px/1 ui-monospace,Consolas,monospace;color:var(--muted,#97a3a0);opacity:.75;white-space:nowrap;flex:none;margin-left:4px}
 .vg-fb{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:1px solid var(--line,#2a3236);border-radius:999px;color:var(--muted,#97a3a0);text-decoration:none;font-size:13px;white-space:nowrap;flex:none;box-sizing:border-box}
 .vg-fb:hover{border-color:var(--muted,#97a3a0);color:var(--fg,#e6eae8)}
 .vg-fb svg{width:15px;height:15px;flex:0 0 auto}
@@ -141,7 +141,7 @@
 .vg-toast .vg-btn.pri{background:var(--brand,#c9a24a);border-color:var(--brand,#c9a24a);color:var(--bg,#121619)}
 @keyframes vg-in{from{opacity:0;transform:translate(-50%,-12px)}}
 @media (max-width:600px){.vg-in{padding:0 12px;height:40px}.vg-logo span{display:none}.vg-logo{margin-right:4px}.vg-pop{right:8px}
-  .vg-lang{padding:0 2px 0 8px}.vg-lang select{font-size:12px;padding-right:4px}.vg-bar .vg-rem{padding:0 8px}.vg-fb{padding:0 8px}.vg-fb span{display:none}.vg-ver{font-size:9px;margin-left:2px}}
+  .vg-lang{padding:0 2px 0 8px}.vg-lang select{font-size:12px;padding-right:4px}.vg-bar .vg-rem{padding:0 8px}.vg-fb{padding:0 8px}.vg-fb span{display:none}.vg-ver{font-size:11px;margin-left:2px}}
 `;
   const globe = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>';
   const chat = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>';

@@ -16,14 +16,14 @@ www.vibe-game.com/              总页面（仓库 vibe-game，public/）
 www.vibe-game.com/nav.js        全站顶栏和游戏登记表 GAMES，所有游戏页面都引用
 www.vibe-game.com/life-sim/     浮生录（仓库 life-sim）：大厅 + 十四亿分之一 + 江湖一梦 + 群侠
 www.vibe-game.com/typing-game/  打字游戏（仓库 typing-game；旧网址 /arthur/ 由 vibe-game 的 public/_redirects 跳转）
-www.vibe-game.com/aquarium/     像素水族箱（仓库 aquairum）
+www.vibe-game.com/aquarium/     像素水族箱（仓库 aquarium）
 www.vibe-game.com/xiaoyao-inn/  逍遥客栈（仓库 xiaoyao-inn）
 www.vibe-game.com/<路径>/        以后的游戏：一个游戏 = 一个仓库 = 一个 Cloudflare Worker = 一条路由
 ```
 
 - 每个游戏的 Worker 用路由 `www.vibe-game.com/<路径>*` 挂在总域名下；总页面的 Worker 用自定义域名接住其余路径。路由比自定义域名先匹配，互不干扰。
-- 只用 Cloudflare 上线，不维护其他部署方式。推送到仓库的生产分支（逍遥客栈是 `master`，其他是 `main`）就会自动构建部署，所以只推送检查过的版本。
-- 新仓库的生产分支统一用 `main`。GitHub 网页上建仓库默认就是 `main`；本地 `git init` 在没设置时默认 `master`，所以本机先设好 `git config --global init.defaultBranch main`。
+- 只用 Cloudflare 上线，不维护其他部署方式。推送到仓库的生产分支 `main` 就会自动构建部署，所以只推送检查过的版本。
+- 所有仓库的生产分支都是 `main`。GitHub 网页上建仓库默认就是 `main`；本地 `git init` 在没设置时默认 `master`，所以本机先设好 `git config --global init.defaultBranch main`。
 
 ## 二、Cloudflare 设置
 
@@ -32,7 +32,7 @@ www.vibe-game.com/<路径>/        以后的游戏：一个游戏 = 一个仓库
 | `vibe-game` | vibe-game | 无 | `npx wrangler deploy`（读 `wrangler.jsonc`，上传 `public/`） | 自定义域名 `www.vibe-game.com` |
 | `life-sim` | life-sim | `node tools/build.js` | `npx wrangler deploy --name life-sim --assets ./dist --compatibility-date=2025-06-01` | 路由 `www.vibe-game.com/life-sim*` |
 | `typing-game` | typing-game | `node tools/build.js` | `npx wrangler deploy --name typing-game --assets ./dist --compatibility-date=2025-06-01` | 路由 `www.vibe-game.com/typing-game*` |
-| `aquarium` | aquairum | `node tools/build.js` | `npx wrangler deploy --name aquarium --assets ./dist --compatibility-date=2025-06-01` | 路由 `www.vibe-game.com/aquarium*` |
+| `aquarium` | aquarium | `node tools/build.js` | `npx wrangler deploy --name aquarium --assets ./dist --compatibility-date=2025-06-01` | 路由 `www.vibe-game.com/aquarium*` |
 | `xiaoyao-inn` | xiaoyao-inn | `node tools/build.js` | `npx wrangler deploy --name xiaoyao-inn --assets ./dist --compatibility-date=2025-06-01` | 路由 `www.vibe-game.com/xiaoyao-inn*` |
 
 游戏全部是同一个格式（Root directory `/`，Zone 选 `vibe-game.com`）：
@@ -43,7 +43,7 @@ Deploy command: npx wrangler deploy --name <路径> --assets ./dist --compatibil
 Route:          www.vibe-game.com/<路径>*
 ```
 
-- **Worker 名 = 网址路径**（例外：水族馆的仓库名是 `aquairum`，路径和 Worker 是 `aquarium`）。
+- **仓库名 = Worker 名 = 网址路径**，三者一致。
 - **Worker 收到的是完整路径**：请求 `/<路径>/index.html` 时，它在上传目录里找 `<路径>/index.html`。所以 `tools/build.js` 必须输出到 `dist/<路径>/...`。直接上传仓库根目录会 404。
 - **三处对上**：`--name` = Worker 名（不一致报 name mismatch）；`tools/build.js` 的路径 = 路由路径；`--assets ./dist` = 打包输出目录。
 - 游戏仓库**不放** `wrangler.jsonc` / `wrangler.toml`，参数都在 Cloudflare 的命令里。只有 vibe-game 用 `wrangler.jsonc`。

@@ -8,7 +8,7 @@ www.vibe-game.com 的总页面和全站外壳（顶栏：游戏列表、版本�
 |---|---|---|
 | 浮生录（十四亿分之一、江湖一梦、群侠） | https://www.vibe-game.com/life-sim/ | [SHKChan/life-sim](https://github.com/SHKChan/life-sim) |
 | 打字游戏 | https://www.vibe-game.com/typing-game/ | [SHKChan/typing-game](https://github.com/SHKChan/typing-game) |
-| 像素水族箱 | https://www.vibe-game.com/aquarium/ | [SHKChan/aquairum](https://github.com/SHKChan/aquairum) |
+| 像素水族箱 | https://www.vibe-game.com/aquarium/ | [SHKChan/aquarium](https://github.com/SHKChan/aquarium) |
 | 逍遥客栈 | https://www.vibe-game.com/xiaoyao-inn/ | [SHKChan/xiaoyao-inn](https://github.com/SHKChan/xiaoyao-inn) |
 
 - `docs/GUIDE.md`：**系列规范**。各游戏仓库的 `CLAUDE.md` 都指向它，做新游戏、改部署和顶栏前先读
