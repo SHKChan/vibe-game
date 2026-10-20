@@ -17,6 +17,8 @@
   // name / tags / desc 按语言写，缺的语言先用英文、再用中文
   const GAMES = [
     { path: '/life-sim/', repo: 'SHKChan/life-sim', color: '#c9a24a',
+      // 合集：首页卡片分别显示里面每个游戏的版本号（各自页面的 vg:version）
+      parts: [['十四亿分之一', '/life-sim/1in1.4b/'], ['江湖一梦', '/life-sim/jianghuyimeng/'], ['群侠', '/life-sim/jianghuyimeng/qunxia/']],
       name: { zh: '浮生录', en: 'Floating Lives', ja: '浮生録', es: 'Vidas Flotantes' },
       tags: { zh: ['人生模拟器', '文字', '一局一生'], en: ['Life sim', 'Text', 'One life per run'] },
       desc: { zh: '投一次胎，从出生活到离世。可以随机投胎到现代中国的某个家庭，也可以重生成射雕三部曲里有名有姓的人物。',
@@ -321,11 +323,14 @@
       + '<div class="tags">' + tx(g.tags).map((t) => '<span>' + esc(t) + '</span>').join('') + '</div>'
       + '<div class="d">' + esc(tx(g.desc)) + '</div>'
       + '<div class="ft"><span class="go">' + esc(tx(TX.go)) + '</span><span class="ver"></span></div></a>').join(''));
+    const fetchVersion = (url) => fetch(url, { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : '')).then(readVersion).catch(() => '');
     GAMES.forEach((g) => {
-      fetch(g.path, { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : '')).then((html) => {
-        const v = readVersion(html), el = box.querySelector('a.game[href="' + g.path + '"] .ver');
-        if (v && el) { el.textContent = 'v' + v; el.title = tx(TX.ver); }
-      }).catch(() => { /* 读不到就不显示 */ });
+      const el = box.querySelector('a.game[href="' + g.path + '"] .ver');
+      const parts = g.parts || [['', g.path]];
+      Promise.all(parts.map((p) => fetchVersion(p[1]))).then((vs) => {
+        const txt = parts.map((p, i) => (vs[i] ? (p[0] ? p[0] + ' ' : '') + 'v' + vs[i] : '')).filter(Boolean).join(' · ');
+        if (txt && el) { el.textContent = txt; el.title = tx(TX.ver); }
+      });
     });
   }
 
@@ -351,6 +356,12 @@
         + LANGS.map((l) => '<option value="' + l[0] + '"' + (l[0] === lang ? ' selected' : '') + '>' + l[2] + '</option>').join('') + '</select></label>' : '')
       + '</div>';
     document.body.insertBefore(bar, document.body.firstChild);
+    // 游戏自己有反馈框（例如浮生录会附上当前进度）就交给它：页面里定义 window.VG_FEEDBACK
+    bar.querySelector('.vg-fb').addEventListener('click', (e) => {
+      if (typeof window.VG_FEEDBACK !== 'function') return;
+      e.preventDefault();
+      window.VG_FEEDBACK();
+    });
     if (LANG_OPEN) bar.querySelector('select').addEventListener('change', (e) => {
       const l = e.target.value;
       if (window.JY && window.JY.setLang) { window.JY.setLang(l); return; }

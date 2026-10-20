@@ -17,7 +17,7 @@ www.vibe-game.com/<游戏>/      以后的游戏，每个一个仓库、一个 C
 ```
 
 - 每个游戏是独立仓库、独立 Worker。Worker 用路由 `www.vibe-game.com/<路径>*` 挂在总域名下，总页面的 Worker 用自定义域名接住其余路径。路由比自定义域名先匹配，所以互不干扰。
-- 游戏打包时把文件放进 `dist/<路径>/`（浮生录用 `node share/tools/build.js --base=life-sim`），页面里的链接一律用相对路径。
+- 游戏打包时把文件放进 `dist/<路径>/`（统一用 `node tools/build.js`），页面里的链接一律用相对路径。
 - 推送到 GitHub 的 `main` 就会自动部署。只推送检查过的版本。
 
 ### Cloudflare 设置（新游戏照抄）
@@ -25,12 +25,12 @@ www.vibe-game.com/<游戏>/      以后的游戏，每个一个仓库、一个 C
 | Worker | 仓库 | 挂法 | Build command | Deploy command |
 |---|---|---|---|---|
 | `vibe-game` | vibe-game | 自定义域名 `www.vibe-game.com` | 无 | `npx wrangler deploy`（读 `wrangler.jsonc`，上传 `public/`） |
-| `life-sim` | life-sim | 路由 `www.vibe-game.com/life-sim*` | `node share/tools/build.js --base=life-sim` | `npx wrangler deploy --name life-sim --assets ./dist --compatibility-date=…` |
+| `life-sim` | life-sim | 路由 `www.vibe-game.com/life-sim*` | `node tools/build.js`（里面跑 `share/tools/build.js --base=life-sim`） | `npx wrangler deploy --name life-sim --assets ./dist --compatibility-date=2025-06-01` |
 | `typing-game` | typing-game | 路由 `www.vibe-game.com/typing-game*` | `node tools/build.js` | `npx wrangler deploy --name typing-game --assets ./dist --compatibility-date=2025-06-01` |
 | `aquarium` | aquairum | 路由 `www.vibe-game.com/aquarium*` | `node tools/build.js` | `npx wrangler deploy --name aquarium --assets ./dist --compatibility-date=2025-06-01` |
 | `xiaoyao-inn` | xiaoyao-inn | 路由 `www.vibe-game.com/xiaoyao-inn*` | `node tools/build.js`（里面跑 Vite 构建） | `npx wrangler deploy --name xiaoyao-inn --assets ./dist --compatibility-date=2025-06-01` |
 
-除了浮生录（以后再统一），游戏都是同一个格式：Build command 是 `node tools/build.js`，Deploy command 只换 `--name`，Worker 名 = 网址路径。
+所有游戏都是同一个格式：Build command 是 `node tools/build.js`，Deploy command 只换 `--name`，Worker 名 = 网址路径。
 
 **新游戏直接拷 `docs/template/`**（`tools/build.js`、`cloudflare-deploy-guide.md`、`CLAUDE.md`、`index.html`、`.gitignore`），把里面的 `<slug>`、`<worker>`、`<repo>`、`<游戏名>` 换掉。
 
@@ -66,9 +66,9 @@ Route:          www.vibe-game.com/<路径>*   （Zone 选 vibe-game.com）
 | 项 | 做法 |
 |---|---|
 | 全站顶栏 | `<head>` 里加 `<meta name="vg:version" content="1.0.0">` 和 `<script src="/nav.js" defer></script>`。不吸顶，跟着页面滚走。左边是游戏列表，右边是本游戏的版本号、问题反馈（打开 `GAMES` 里登记的仓库的 GitHub Issues）、定时提醒。新增游戏只改本仓库 `public/nav.js` 的 `GAMES`，所有页面一起更新。游戏自己的操作栏放在它下面，可以吸顶 |
-| 不做底栏 | 屏幕留给游戏。版本号和问题反馈都在顶栏。浮生录的旧底栏以后再统一 |
+| 不做底栏 | 屏幕留给游戏。版本号和问题反馈都在顶栏。游戏自己有反馈框（例如浮生录会附上进度）时，在页面里定义 `window.VG_FEEDBACK`，顶栏的“问题反馈”就打开它 |
 | 铺满屏幕的游戏 | 顶栏高度写在 CSS 变量 `--vg-nav-h`，游戏容器用 `top: var(--vg-nav-h, 0px)` 让位置，顶栏装好后会触发一次 `resize`（例：逍遥客栈） |
-| 版本号 | 写在 `vg:version`，顶栏里用不显眼的小号等宽字显示，格式 `v1.5.0`；首页游戏卡也会去游戏页面读它（浮生录还是 `game.js` 的 `version`）。每次发布新内容时改：加内容改中间位，修 bug 改末位，大改玩法改首位 |
+| 版本号 | 写在 `vg:version`，顶栏里用不显眼的小号等宽字显示，格式 `v1.5.0`；首页游戏卡也会去游戏页面读它。浮生录的版本号在各游戏 `game.js` 的 `version`，打包时写进 `vg:version`；首页它的卡片按 `GAMES` 里的 `parts` 分别显示三个游戏的版本号。每次发布新内容时改：加内容改中间位，修 bug 改末位，大改玩法改首位 |
 | 定时提醒 | 由 `/nav.js` 提供，游戏不用写。顶栏右上角的闹钟：喝水、起来走走、护眼或自定义，20/30/45/60 分钟或自定义分钟数，可重复、可开浏览器通知。到点时间存在 `vibe.reminder`，换游戏、刷新都接着倒计时；开着多个标签页只响一次；页面全关了不会提醒，再打开时如果已经过点会补一次 |
 | 主题 | 暗（默认）、灰、白三种，点一下换下一种，记在 `localStorage`。颜色全部用 CSS 变量，三套都要好看 |
 | 语言 | **暂时只开中文**：`nav.js` 的 `LANG_OPEN = false`，顶栏不放语言选择，`vibe.lang` 固定是 `zh`。以后开放时：中文、English、日本語、Español，选择存在 `vibe.lang`，所有游戏共用，第一次按浏览器语言选 |
