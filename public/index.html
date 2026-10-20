@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vibe Game · 网页小游戏合集</title>
-<meta name="description" content="Vibe Game：打开就能玩的网页小游戏合集。浮生录人生模拟器、Arthur 的打字游戏、像素水族箱、逍遥客栈经营。">
+<meta name="description" content="Vibe Game：打开就能玩的网页小游戏合集。浮生录人生模拟器、打字游戏、像素水族箱、逍遥客栈经营。">
 <meta name="keywords" content="网页游戏,小游戏,人生模拟器,浮生录,十四亿分之一,江湖一梦,金庸,打字游戏,水族箱,逍遥客栈">
 <meta name="theme-color" content="#0e1315">
 <meta property="og:title" content="Vibe Game · 网页小游戏合集">
@@ -35,8 +35,9 @@
   .game .tags { display: flex; flex-wrap: wrap; gap: 6px; }
   .game .tags span { font-size: 12px; color: var(--c); border: 1px solid currentColor; border-radius: 3px; padding: 0 6px; line-height: 1.7; }
   .game .d { color: var(--soft); font-size: 15px; }
-  .game .go { margin-top: auto; align-self: flex-start; font-size: 14px; color: var(--bg); background: var(--c); border-radius: 4px; padding: 4px 14px; }
-  .soon { opacity: .5; pointer-events: none; }
+  .game .ft { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .game .go { font-size: 14px; color: var(--bg); background: var(--c); border-radius: 4px; padding: 4px 14px; }
+  .game .ver { font: 11px/1 ui-monospace, Consolas, monospace; color: var(--muted); opacity: .8; }
   footer { margin-top: 48px; color: var(--muted); font-size: 13px; }
 </style>
 <script src="/nav.js" defer></script>
@@ -48,13 +49,8 @@
     <h1>Vibe <i>Game</i></h1>
     <p>打开就能玩的网页小游戏。不用下载，不用注册，手机电脑都能玩。</p>
   </header>
-  <!-- 游戏卡由 /nav.js 按 GAMES 生成，插在“新游戏”前面。新增游戏只改 nav.js -->
-  <main class="games" id="vg-games">
-    <div class="game soon" style="--c:#7d7a72">
-      <div class="nm">新游戏</div>
-      <div class="d">正在做。</div>
-    </div>
-  </main>
+  <!-- 游戏卡由 /nav.js 按 GAMES 生成，版本号从各游戏页面读。新增游戏只改 nav.js -->
+  <main class="games" id="vg-games"></main>
   <footer>www.vibe-game.com</footer>
 </div>
 </body>

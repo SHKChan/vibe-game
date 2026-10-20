@@ -1,0 +1,3 @@
+# 旧网址跳到新网址（打字游戏 2026-10 从 /arthur/ 改到 /typing-game/）
+/arthur /typing-game/ 301
+/arthur/* /typing-game/:splat 301

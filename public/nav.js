@@ -1,9 +1,9 @@
-/* Vibe Game 全站外壳：顶栏 + 底栏 + 定时提醒 + 游戏登记表
+/* Vibe Game 全站外壳：顶栏（游戏列表、版本号、问题反馈、定时提醒）+ 游戏登记表
  * 每个游戏页面的 <head> 里加：
- *   <meta name="vg:version" content="1.0.0">          版本号，有它才显示底栏（面包屑、版本号、问题反馈）
- *   <meta name="vg:layout" content="fullscreen">      可选：铺满屏幕的游戏，不加底栏，版本号放进顶栏；顶栏高度写在 CSS 变量 --vg-nav-h
+ *   <meta name="vg:version" content="1.0.0">          本游戏的版本号，显示在顶栏；首页游戏卡也去各游戏页面读这一行，所以发版不用改首页
  *   <script src="/nav.js" defer></script>
- * 顶栏不吸顶，跟着页面滚走。新增游戏只改这个文件的 GAMES：顶栏、首页游戏卡、底栏面包屑都从这里来。
+ * 顶栏不吸顶，跟着页面滚走；没有底栏，游戏可以用满屏幕。顶栏高度写在 CSS 变量 --vg-nav-h，铺满屏幕的游戏用它让位置（装好后会触发一次 resize）。
+ * 新增游戏只改这个文件的 GAMES：顶栏、首页游戏卡都从这里来。
  * 颜色读宿主页面的 CSS 变量（--bg --panel --fg --line --muted --brand），没有就用自己的默认值，深浅主题都能看。
  * 语言存在 localStorage 的 vibe.lang（各游戏共用）；页面里有 JY.setLang 就交给它，没有就自己存了刷新。
  * 定时提醒存在 localStorage 的 vibe.reminder（各游戏共用），换游戏、刷新都接着倒计时；多个标签页只响一次。
@@ -21,8 +21,8 @@
       tags: { zh: ['人生模拟器', '文字', '一局一生'], en: ['Life sim', 'Text', 'One life per run'] },
       desc: { zh: '投一次胎，从出生活到离世。可以随机投胎到现代中国的某个家庭，也可以重生成射雕三部曲里有名有姓的人物。',
         en: 'Be born once and live until the end: into a random family in modern China, or as a named hero of the Condor trilogy.' } },
-    { path: '/arthur/', repo: 'SHKChan/typing-game', color: '#89b4fa',
-      name: { zh: 'Arthur 的打字游戏', en: "Arthur's Typing Game", ja: 'Arthurのタイピングゲーム', es: 'Mecanografía de Arthur' },
+    { path: '/typing-game/', repo: 'SHKChan/typing-game', color: '#89b4fa',
+      name: { zh: '打字游戏', en: 'Typing Game', ja: 'タイピングゲーム', es: 'Mecanografía' },
       tags: { zh: ['打字', '像素', '打怪'], en: ['Typing', 'Pixel', 'Battle'] },
       desc: { zh: '看词打词，打对一个就砍史莱姆一刀。五关越来越长，打错会掉血，挑战最快通关时间。',
         en: 'Type the word to strike the slime. Five stages of longer words; mistakes cost hearts. Beat your best time.' } },
@@ -38,8 +38,10 @@
         en: 'Stay home in Yuhang and run the family inn: watch guests by day, plan recipes, staff and upgrades by night.' } },
   ];
   const LANGS = [['zh', '中', '中文'], ['en', 'EN', 'English'], ['ja', '日', '日本語'], ['es', 'ES', 'Español']];
+  // 翻译暂时只开中文：顶栏不放语言选择，并把 vibe.lang 定成 zh（各游戏读它）。找到更好的翻译办法后改成 true
+  const LANG_OPEN = false;
   let lang = 'zh';
-  try { lang = localStorage.getItem('vibe.lang') || ''; } catch (e) { /* 忽略 */ }
+  try { if (LANG_OPEN) lang = localStorage.getItem('vibe.lang') || ''; else localStorage.setItem('vibe.lang', 'zh'); } catch (e) { /* 忽略 */ }
   if (!LANGS.some((l) => l[0] === lang)) {
     const n = (navigator.language || '').toLowerCase();
     lang = /^ja/.test(n) ? 'ja' : /^es/.test(n) ? 'es' : /^en/.test(n) ? 'en' : 'zh';
@@ -50,6 +52,7 @@
     ver: { zh: '版本', en: 'Version', ja: 'バージョン', es: 'Versión' },
     feedback: { zh: '问题反馈', en: 'Feedback', ja: 'フィードバック', es: 'Comentarios' },
     go: { zh: '进入', en: 'Play', ja: 'プレイ', es: 'Jugar' },
+    fbTip: { zh: '在 GitHub 上提问题、提建议', en: 'Report a problem or idea on GitHub', ja: 'GitHub で問題や提案を送る', es: 'Informar un problema o idea en GitHub' },
     remind: { zh: '定时提醒', en: 'Reminder', ja: 'リマインダー', es: 'Recordatorio' },
     remindMe: { zh: '提醒我', en: 'Remind me to', ja: 'お知らせ内容', es: 'Recuérdame' },
     every: { zh: '时间（分钟）', en: 'Every (minutes)', ja: '間隔（分）', es: 'Cada (minutos)' },
@@ -91,7 +94,10 @@
 .vg-games a:hover{color:var(--fg,#e6eae8);background:color-mix(in srgb,var(--fg,#e6eae8) 8%,transparent)}
 .vg-games a[aria-current="page"]{color:var(--fg,#e6eae8);background:color-mix(in srgb,var(--fg,#e6eae8) 10%,transparent)}
 .vg-sp{flex:1}
-.vg-ver{font:11px/1 ui-monospace,Consolas,monospace;color:var(--muted,#97a3a0);opacity:.7;white-space:nowrap}
+.vg-ver{font:11px/1 ui-monospace,Consolas,monospace;color:var(--muted,#97a3a0);opacity:.7;white-space:nowrap;flex:none}
+.vg-fb{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 10px;border:1px solid var(--line,#2a3236);border-radius:999px;color:var(--muted,#97a3a0);text-decoration:none;font-size:13px;white-space:nowrap;flex:none;box-sizing:border-box}
+.vg-fb:hover{border-color:var(--muted,#97a3a0);color:var(--fg,#e6eae8)}
+.vg-fb svg{width:15px;height:15px;flex:0 0 auto}
 .vg-lang{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 4px 0 10px;border:1px solid var(--line,#2a3236);border-radius:999px;color:var(--muted,#97a3a0);background:transparent;cursor:pointer;flex:none}
 .vg-lang:hover{border-color:var(--muted,#97a3a0);color:var(--fg,#e6eae8)}
 .vg-lang svg,.vg-bar .vg-rem svg{width:15px;height:15px;flex:0 0 auto}
@@ -132,17 +138,11 @@
 .vg-toast .vg-btn{all:unset;box-sizing:border-box;padding:6px 14px;border-radius:6px;cursor:pointer;font-size:13px;font-weight:700;border:1px solid var(--line,#2a3236);color:var(--fg,#e6eae8)}
 .vg-toast .vg-btn.pri{background:var(--brand,#c9a24a);border-color:var(--brand,#c9a24a);color:var(--bg,#121619)}
 @keyframes vg-in{from{opacity:0;transform:translate(-50%,-12px)}}
-.vg-foot{all:initial;display:block;flex:none;font:12px/1.5 "Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;color:var(--muted,var(--dim,#97a3a0));
-  border-top:1px solid var(--line,#2a3236);margin-top:24px}
-.vg-foot .vg-fin{max-width:1440px;margin:0 auto;padding:12px 20px calc(12px + env(safe-area-inset-bottom));box-sizing:border-box;display:flex;align-items:center;gap:8px 16px;flex-wrap:wrap}
-.vg-foot a{color:inherit;text-decoration:none}
-.vg-foot a:hover{color:var(--fg,#e6eae8);text-decoration:underline}
-.vg-foot .vg-cur{color:var(--fg,#e6eae8)}
-.vg-foot .vg-ver{font-size:11px}
 @media (max-width:600px){.vg-in{padding:0 12px;height:40px}.vg-logo span{display:none}.vg-logo{margin-right:4px}.vg-pop{right:8px}
-  .vg-lang{padding:0 2px 0 8px}.vg-lang select{font-size:12px;padding-right:4px}.vg-bar .vg-rem{padding:0 8px}.vg-in>.vg-ver{display:none}.vg-foot .vg-fin{padding-left:12px;padding-right:12px}}
+  .vg-lang{padding:0 2px 0 8px}.vg-lang select{font-size:12px;padding-right:4px}.vg-bar .vg-rem{padding:0 8px}.vg-fb{padding:0 8px}.vg-fb span{display:none}.vg-ver{font-size:10px}}
 `;
   const globe = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>';
+  const chat = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M8 9h8M8 12h5"/></svg>';
   const clock = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M5 3 2 6M19 3l3 3"/></svg>';
 
   // ---------- 定时提醒 ----------
@@ -312,18 +312,27 @@
     return pop;
   }
 
-  // ---------- 顶栏、底栏、首页游戏卡 ----------
+  // ---------- 顶栏、首页游戏卡 ----------
+  // 版本号不写在这里：去各游戏页面读它自己的 <meta name="vg:version">，游戏发版不用改首页
+  const readVersion = (html) => { const m = /<meta\s+name=["']vg:version["']\s+content=["']v?([^"']+)["']/i.exec(html); return m ? m[1] : ''; };
   function cards(box) {
     box.insertAdjacentHTML('afterbegin', GAMES.map((g) => '<a class="game" href="' + g.path + '" style="--c:' + g.color + '">'
       + '<div class="nm">' + esc(tx(g.name)) + '</div>'
       + '<div class="tags">' + tx(g.tags).map((t) => '<span>' + esc(t) + '</span>').join('') + '</div>'
       + '<div class="d">' + esc(tx(g.desc)) + '</div>'
-      + '<span class="go">' + esc(tx(TX.go)) + '</span></a>').join(''));
+      + '<div class="ft"><span class="go">' + esc(tx(TX.go)) + '</span><span class="ver"></span></div></a>').join(''));
+    GAMES.forEach((g) => {
+      fetch(g.path, { cache: 'no-cache' }).then((r) => (r.ok ? r.text() : '')).then((html) => {
+        const v = readVersion(html), el = box.querySelector('a.game[href="' + g.path + '"] .ver');
+        if (v && el) { el.textContent = 'v' + v; el.title = tx(TX.ver); }
+      }).catch(() => { /* 读不到就不显示 */ });
+    });
   }
 
   function mount() {
     if (document.querySelector('.vg-bar')) return;
-    const version = meta('vg:version').replace(/^v/i, ''), full = meta('vg:layout') === 'fullscreen';
+    const version = meta('vg:version').replace(/^v/i, '');
+    const repo = game ? game.repo : 'SHKChan/vibe-game';
     const st = document.createElement('style');
     st.textContent = css;
     document.head.appendChild(st);
@@ -335,13 +344,14 @@
       + '<a class="vg-logo" href="/" title="' + esc(tx(TX.home)) + '"><i></i><span>Vibe Game</span></a>'
       + '<div class="vg-games">' + GAMES.map((g) => '<a href="' + g.path + '"' + (g === game ? ' aria-current="page"' : '') + '>' + esc(tx(g.name)) + '</a>').join('') + '</div>'
       + '<span class="vg-sp"></span>'
-      + (full && version ? '<span class="vg-ver" title="' + esc(tx(TX.ver)) + '">v' + esc(version) + '</span>' : '')
+      + (version ? '<span class="vg-ver" title="' + esc(tx(TX.ver)) + '">v' + esc(version) + '</span>' : '')
+      + '<a class="vg-fb" href="https://github.com/' + repo + '/issues/new" target="_blank" rel="noopener" title="' + esc(tx(TX.fbTip)) + '">' + chat + '<span>' + esc(tx(TX.feedback)) + '</span></a>'
       + '<button type="button" class="vg-rem" aria-haspopup="dialog" aria-expanded="false" aria-label="' + esc(tx(TX.remind)) + '">' + clock + '<span></span></button>'
-      + '<label class="vg-lang" title="' + esc(tx(TX.lang)) + '">' + globe + '<select aria-label="' + esc(tx(TX.lang)) + '">'
-      + LANGS.map((l) => '<option value="' + l[0] + '"' + (l[0] === lang ? ' selected' : '') + '>' + l[2] + '</option>').join('') + '</select></label>'
+      + (LANG_OPEN ? '<label class="vg-lang" title="' + esc(tx(TX.lang)) + '">' + globe + '<select aria-label="' + esc(tx(TX.lang)) + '">'
+        + LANGS.map((l) => '<option value="' + l[0] + '"' + (l[0] === lang ? ' selected' : '') + '>' + l[2] + '</option>').join('') + '</select></label>' : '')
       + '</div>';
     document.body.insertBefore(bar, document.body.firstChild);
-    bar.querySelector('select').addEventListener('change', (e) => {
+    if (LANG_OPEN) bar.querySelector('select').addEventListener('change', (e) => {
       const l = e.target.value;
       if (window.JY && window.JY.setLang) { window.JY.setLang(l); return; }
       try { localStorage.setItem('vibe.lang', l); } catch (err) { /* 忽略 */ }
@@ -364,20 +374,7 @@
     const setH = () => document.documentElement.style.setProperty('--vg-nav-h', bar.offsetHeight + 'px');
     setH();
     window.addEventListener('resize', setH);
-    if (full) window.dispatchEvent(new Event('resize'));
-
-    if (version && !full) {
-      const foot = document.createElement('div');
-      foot.className = 'vg-foot notranslate';
-      foot.setAttribute('translate', 'no');
-      foot.setAttribute('role', 'contentinfo');
-      foot.innerHTML = '<div class="vg-fin"><a href="/">Vibe Game</a>'
-        + (game ? '<span aria-hidden="true">›</span><span class="vg-cur">' + esc(tx(game.name)) + '</span>' : '')
-        + '<span class="vg-sp"></span><span class="vg-ver" title="' + esc(tx(TX.ver)) + '">v' + esc(version) + '</span>'
-        + (game ? '<a href="https://github.com/' + game.repo + '/issues/new" target="_blank" rel="noopener">' + esc(tx(TX.feedback)) + '</a>' : '')
-        + '</div>';
-      document.body.appendChild(foot);
-    }
+    window.dispatchEvent(new Event('resize'));
 
     const box = document.getElementById('vg-games');
     if (box) cards(box);

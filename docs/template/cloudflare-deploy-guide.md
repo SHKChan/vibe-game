@@ -8,7 +8,7 @@
 
 | 仓库 | Cloudflare Worker | 挂在哪 | 说明 |
 |---|---|---|---|
-| `SHKChan/vibe-game` | `vibe-game` | 自定义域名 `www.vibe-game.com`（兜底所有路径） | 总页面 + 全站外壳 `/nav.js`（顶栏、底栏、定时提醒、游戏登记表） |
+| `SHKChan/vibe-game` | `vibe-game` | 自定义域名 `www.vibe-game.com`（兜底所有路径） | 总页面 + 全站外壳 `/nav.js`（顶栏：游戏列表、版本号、问题反馈、定时提醒；游戏登记表） |
 | `SHKChan/<repo>`（**本仓库**） | `<worker>` | 路由 `www.vibe-game.com/<slug>*` | 本游戏 |
 
 其他游戏的完整列表见 vibe-game 的 `docs/GUIDE.md`。
@@ -80,13 +80,14 @@ Worker `<worker>` → Domains & Routes → 添加 Route：
 
 ## 5. 页面里的约定
 
-- `<head>` 里这两行，全站外壳（顶栏、底栏、定时提醒）就都有了，游戏自己不用写导航和底栏：
+- `<head>` 里这两行，全站顶栏（游戏列表、版本号、问题反馈、定时提醒）就有了，游戏自己不用写导航，也**不要做底栏**（屏幕留给游戏）：
   ```html
   <meta name="vg:version" content="0.1.0">
   <script src="/nav.js" defer></script>
   ```
-  - `vg:version` 是版本号，显示在底栏。发布新内容改中间位，修 bug 改末位，大改玩法改首位。
-  - 铺满整屏、自己不滚动的游戏，再加 `<meta name="vg:layout" content="fullscreen">`：这样不加底栏，版本号放进顶栏；游戏容器用 `top: var(--vg-nav-h, 0px)` 给顶栏让位置（顶栏装好后会触发一次 `resize`）。
+  - `vg:version` 是版本号，显示在顶栏，首页的游戏卡也从这里读，所以发版只改这一行，不用改 vibe-game。发布新内容改中间位，修 bug 改末位，大改玩法改首位。
+  - 铺满整屏、自己不滚动的游戏，容器用 `top: var(--vg-nav-h, 0px)` 给顶栏让位置（顶栏装好后会触发一次 `resize`）。
+- 语言：全站翻译暂时只开中文，`vibe.lang` 固定是 `zh`，游戏界面先只做中文。
 - `<title>` 写成 `游戏名 · Vibe Game`。
 - **本游戏自己的文件，一律用相对路径**：`./game.js`、`assets/bg.png`。
   - ❌ 不要写 `/game.js`，它会去找 `www.vibe-game.com/game.js`，那个请求归 vibe-game 的 Worker 处理，结果是 404。
@@ -98,7 +99,7 @@ Worker `<worker>` → Domains & Routes → 添加 Route：
 
 ## 6. 上线时还要改另一个仓库（vibe-game）
 
-新游戏要出现在顶栏和总页面上，只需要在 **`SHKChan/vibe-game`** 的 `public/nav.js` 里给 `GAMES` 加一项（顶栏、首页游戏卡、底栏面包屑都从这里生成），再在 README 的表格里加一行：
+新游戏要出现在顶栏和总页面上，只需要在 **`SHKChan/vibe-game`** 的 `public/nav.js` 里给 `GAMES` 加一项（顶栏、首页游戏卡都从这里生成），再在 README 的表格里加一行。之后发版不用再改 vibe-game：
 
 ```js
 { path: '/<slug>/', repo: 'SHKChan/<repo>', color: '#5ab0e8',
@@ -107,7 +108,7 @@ Worker `<worker>` → Domains & Routes → 添加 Route：
   desc: { zh: '…', en: '…' } },
 ```
 
-全系列的共同约定（顶栏、底栏、版本号、主题、语言、画风、检查方法）写在 `vibe-game/docs/GUIDE.md`。做功能之前先读一遍。
+全系列的共同约定（顶栏、版本号、主题、语言、画风、检查方法）写在 `vibe-game/docs/GUIDE.md`。做功能之前先读一遍。
 
 ---
 
@@ -120,7 +121,7 @@ Worker `<worker>` → Domains & Routes → 添加 Route：
   npx wrangler dev --assets ./dist --compatibility-date=2025-06-01
   # 然后打开 http://localhost:8787/<slug>/
   ```
-  （`/nav.js` 在本地是 404，所以看不到顶栏和底栏，这是正常的，线上由 vibe-game 的 Worker 提供）
+  （`/nav.js` 在本地是 404，所以看不到顶栏，这是正常的，线上由 vibe-game 的 Worker 提供）
 - [ ] 代码里没有以 `/` 开头的本游戏资源路径（`/nav.js` 除外）
 - [ ] 发布新内容时改了 `vg:version`
 - [ ] 推送后，在 Cloudflare 的 Deployments 页面确认构建成功，然后打开 `https://www.vibe-game.com/<slug>/` 实际验证
