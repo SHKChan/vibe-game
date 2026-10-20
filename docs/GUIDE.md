@@ -182,11 +182,5 @@ Route:          www.vibe-game.com/<路径>*
 - 模拟器的检查规则就是给助手的“验收标准”，规则越具体，返工越少。
 - 设计子代理（game-designer、narrative-designer、economy-designer、level-designer）**只放在 vibe-game 的 `.claude/agents/`**，游戏仓库不放副本，免得各份改得不一样。
   - 在 vibe-game 里工作时它们直接可用。
-  - 在游戏仓库里需要时，按需读取：本地 `../vibe-game/.claude/agents/<名字>.md`，或线上 `https://raw.githubusercontent.com/SHKChan/vibe-game/main/.claude/agents/<名字>.md`；把文件正文（frontmatter 以下）连同具体任务交给一个通用子代理去做。游戏仓库里它们不会自动出现，所以下面这些活要主动去读：
-    - 调数值、经济、价格、成长曲线、平衡报告 → economy-designer
-    - 新玩法、系统改动、核心循环 → game-designer
-    - 剧情、事件、对白、人物 → narrative-designer
-    - 关卡、地图、难度节奏 → level-designer
-    - 只改 bug、改样式、改错字这类小活不用读。
-  - 每个游戏自己的数值目标、平衡指标、检查命令写在那个游戏的 `CLAUDE.md` 和设计文档里，不写进代理文件。代理只管通用方法，具体数字归各游戏仓库。
+  - 在游戏仓库里需要时，按需读取：本地 `../vibe-game/.claude/agents/<名字>.md`，或线上 `https://raw.githubusercontent.com/SHKChan/vibe-game/main/.claude/agents/<名字>.md`；把文件正文（frontmatter 以下）连同具体任务交给一个通用子代理去做。用不到就不用读。
   - 引擎类代理（Unity、Unreal、Godot、Roblox、Blender 等）和纯静态网页游戏无关，不要放进来。
