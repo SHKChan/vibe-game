@@ -20,6 +20,7 @@
 | 生产分支 | `main`（推送即部署） |
 | 打包 | `node tools/build.js` → `dist/<slug>/`；新增运行时文件要加进 `FILES` |
 | 版本号 | `index.html` 的 `<meta name="vg:version">` |
+| 更新日志 | `CHANGELOG.md`（每次发版都写，见 GUIDE 第五节） |
 | 存档键 | `<slug>.*` |
 
 ## 本游戏

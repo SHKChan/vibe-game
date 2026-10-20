@@ -15,4 +15,9 @@ const repo = path.join(__dirname, '..');
 const out = path.join(repo, 'dist');
 fs.rmSync(out, { recursive: true, force: true });
 for (const f of FILES) fs.cpSync(path.join(repo, f), path.join(out, SLUG, f), { recursive: true });
+fs.writeFileSync(path.join(out, '_headers'), `/${SLUG}/
+  Cache-Control: no-cache
+/${SLUG}/*.html
+  Cache-Control: no-cache
+`); // 页面不缓存（GUIDE 第二节）
 console.log('已生成 dist/' + SLUG + '/：' + FILES.join(', '));

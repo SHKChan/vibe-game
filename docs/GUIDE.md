@@ -75,17 +75,21 @@ Route:          www.vibe-game.com/<路径>*
 | 标题 | `<title>游戏名 · Vibe Game</title>`（页面里改标题时也带上后缀） |
 | 路径 | 本游戏的文件一律用**相对路径**；只有 `/nav.js` 用 `/` 开头（它归 vibe-game 的 Worker）。写成 `/game.js` 会去找总页面，结果 404 |
 | localStorage | 键名加本游戏前缀（整个域名共用一个 localStorage），存档用 `<前缀>.save.v<版本>`，结构改了就升版本。全站共用、游戏不要动的键：`vibe.lang`、`vibe.reminder`、`vibe.reminder.fired` |
-| 语言 | **暂时只开中文**：`nav.js` 的 `LANG_OPEN = false`，顶栏没有语言选择，`vibe.lang` 固定 `zh`；游戏也只显示中文（浮生录在 `share/i18n.js` 有同名开关）。已有的翻译留着，开放时两处开关一起改 |
+| 语言 | **暂时只开中文**：`nav.js` 的 `LANG_OPEN = false`，顶栏没有语言选择，`vibe.lang` 固定 `zh`；游戏也只显示中文（浮生录在 `share/i18n.js` 有同名开关）。已有的翻译留着，开放时两处开关一起改。**例外**：打字游戏（typing-game）界面是英文，见它的 `CLAUDE.md` |
 | 主题 | 有主题切换的游戏：暗（默认）、灰、白三种，点一下换下一种，记在 `localStorage`；颜色全部用 CSS 变量，三套都要好看。顶栏会读页面的 `--bg --panel --fg --line --muted --brand` |
 | 手机 | 820px 以下单栏，最重要的内容排最上面；按钮区横向滑动，不换行；390px 宽不能有横向滚动 |
 
 以后开放翻译时的做法：界面文字预先翻译（代码写 `t('中文')`，词表按中文原文做键）；剧情、长文本不预先翻译，载入谷歌网页翻译（写 `googtrans=/zh-CN/en` cookie，再载入 `translate.google.com/translate_a/element.js`，藏掉横幅；已按语言写好的元素加 `class="notranslate"`）；钱在中文下显示人民币，其他语言换算成美元。
 
-## 五、版本号
+## 五、版本号和更新日志
+
+**给 agent：每次推送会改变玩家看到的东西（新内容、修 bug、调数值、改界面），都要做两件事：改版本号，写一条更新日志。** 用户不会每次提醒。
 
 - 写在页面的 `vg:version`，格式 `1.5.0`（显示成 `v1.5.0`）。加内容改中间位，修 bug 改末位，大改玩法改首位；每次发布新内容都要改。
 - 顶栏和首页游戏卡都从游戏页面读这一行，**发版不用改 vibe-game**。
-- 版本号也可以写在游戏设定里、由打包脚本写进 `vg:version`（浮生录：`game.js` 的 `version`，群侠：`qunxia/ui.js` 的 `VERSION`）。合集在首页卡片上按 `GAMES` 的 `parts` 分别显示各游戏的版本号。
+- 版本号也可以写在游戏设定里、由打包脚本写进 `vg:version`（浮生录：`game.js` 的 `version`，群侠：`qunxia/ui.js` 的 `VERSION`，逍遥客栈：`package.json` 的 `version`）。合集在首页卡片上按 `GAMES` 的 `parts` 分别显示各游戏的版本号。
+- **更新日志**：每个游戏仓库根目录放 `CHANGELOG.md`（已有进度文档的写在那里，在本仓库 `CLAUDE.md` 的参数表里注明，例如逍遥客栈的 `docs/progress.md`）。每个版本一节，最新的在最上面：标题写 `## v1.5.0（2026-10-20）`，下面用白话列出玩家能感觉到的变化，数值改动写改前改后。版本号和日志里的标题要对得上。
+- 只改文档、注释、测试、打包配置这类玩家看不到的东西，可以不改版本号、不写日志。
 
 ## 六、上线新游戏、改路径
 
@@ -100,7 +104,7 @@ Route:          www.vibe-game.com/<路径>*
 - [ ] `node tools/build.js` 成功，生成 `dist/<路径>/index.html`
 - [ ] 本地预览：`npx wrangler dev --assets ./dist --compatibility-date=2025-06-01`，打开 `http://localhost:8787/<路径>/`，没有 404（本地看不到顶栏，`/nav.js` 是 404，正常）。要看顶栏，就把 vibe-game 的 `public/` 和各游戏的 `dist/*/` 拼到一个目录里一起预览
 - [ ] 代码里没有以 `/` 开头的本游戏资源路径（`/nav.js` 除外）
-- [ ] 发布新内容时改了版本号
+- [ ] 改了玩家看得到的东西：版本号改了，更新日志写了，两边版本号对得上
 - [ ] 游戏自己的检查（模拟器、测试）全过；改了界面就截图看电脑和 390px 手机宽度
 - [ ] 推送后在 Cloudflare 的 Deployments 页面确认构建成功，再打开线上地址看一眼
 - [ ] 改了 vibe-game 的 `nav.js`：它会被所有游戏加载，要在每个游戏页面（含手机宽度）检查
@@ -150,7 +154,6 @@ Route:          www.vibe-game.com/<路径>*
 ## 十三、和 Claude 协作
 
 - 用户偏好：用中文交流；改完检查通过后直接提交、推送，不用等审阅代码；最后用白话总结改了什么。
-- **提交信息用中文写**（标题一句话说清改了什么，需要时正文补几行），所有仓库都一样。
 - 大改动先搭好“工具层”（数据接口、检查工具），写进 SPEC，再把内容按文件分给多个助手并行写，每个助手只改自己的文件，避免互相覆盖。并行助手四五个是上限，长任务要能从中断处接着做。
 - 模拟器的检查规则就是给助手的“验收标准”，规则越具体，返工越少。
 - 设计子代理（game-designer、narrative-designer、economy-designer、level-designer）**只放在 vibe-game 的 `.claude/agents/`**，游戏仓库不放副本，免得各份改得不一样。
