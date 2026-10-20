@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Vibe Game · 网页小游戏合集</title>
-<meta name="description" content="Vibe Game：打开就能玩的网页小游戏合集。浮生录人生模拟器：投胎到现代中国，或者重生成金庸江湖里的人物。">
-<meta name="keywords" content="网页游戏,小游戏,人生模拟器,浮生录,十四亿分之一,江湖一梦,金庸">
+<meta name="description" content="Vibe Game：打开就能玩的网页小游戏合集。浮生录人生模拟器、Arthur 的打字游戏、像素水族箱、逍遥客栈经营。">
+<meta name="keywords" content="网页游戏,小游戏,人生模拟器,浮生录,十四亿分之一,江湖一梦,金庸,打字游戏,水族箱,逍遥客栈">
 <meta name="theme-color" content="#0e1315">
 <meta property="og:title" content="Vibe Game · 网页小游戏合集">
 <meta property="og:description" content="打开就能玩的网页小游戏合集。">
@@ -42,25 +42,14 @@
 <script src="/nav.js" defer></script>
 </head>
 <body>
-<!-- 游戏总页面。新增游戏：在下面加一个 <a class="game">，href 指向它的路径 -->
+<!-- 游戏总页面 -->
 <div class="wrap">
   <header>
     <h1>Vibe <i>Game</i></h1>
     <p>打开就能玩的网页小游戏。不用下载，不用注册，手机电脑都能玩。</p>
   </header>
-  <main class="games">
-    <a class="game" href="/life-sim/" style="--c:#c9a24a">
-      <div class="nm">浮生录</div>
-      <div class="tags"><span>人生模拟器</span><span>文字</span><span>一局一生</span></div>
-      <div class="d">投一次胎，从出生活到离世。可以随机投胎到现代中国的某个家庭，也可以重生成射雕三部曲里有名有姓的人物。</div>
-      <span class="go">进入</span>
-    </a>
-    <a class="game" href="/arthur/" style="--c:#89b4fa">
-      <div class="nm">Arthur 的打字游戏</div>
-      <div class="tags"><span>打字</span><span>30 秒</span><span>拼手速</span></div>
-      <div class="d">30 秒内看词打词，打对一个得一分，挑战自己的最高分。</div>
-      <span class="go">进入</span>
-    </a>
+  <!-- 游戏卡由 /nav.js 按 GAMES 生成，插在“新游戏”前面。新增游戏只改 nav.js -->
+  <main class="games" id="vg-games">
     <div class="game soon" style="--c:#7d7a72">
       <div class="nm">新游戏</div>
       <div class="d">正在做。</div>
